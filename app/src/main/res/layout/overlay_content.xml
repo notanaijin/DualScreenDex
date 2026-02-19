@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/containerBattle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@android:color/transparent">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/cardHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@android:color/transparent">
+
+        <TextView
+            android:id="@+id/tvTargetName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:id="@+id/layoutTargetTypes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp"/>
+
+    </LinearLayout>
+
+    <!-- Weakness -->
+    <TextView
+        android:id="@+id/lblWeak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weak against..."
+        android:layout_marginTop="10dp"/>
+
+    <LinearLayout
+        android:id="@+id/gridWeak"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
+
+    <!-- Resistance -->
+    <TextView
+        android:id="@+id/lblResist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resistant against..."
+        android:layout_marginTop="10dp"/>
+
+    <LinearLayout
+        android:id="@+id/gridResist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
+
+</LinearLayout>

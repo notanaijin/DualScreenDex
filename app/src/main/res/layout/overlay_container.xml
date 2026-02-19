@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/overlayRootFrame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/overlay_background"
+>
+
+    <!-- Main App UI -->
+    <include
+        layout="@layout/overlay_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <!-- Drag area (small invisible strip at top) -->
+    <View
+        android:id="@+id/overlayDragBar"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_gravity="top"
+        android:background="@android:color/transparent"/>
+
+    <!-- Resize handle bottom-right corner -->
+    <View
+        android:id="@+id/overlayResizeHandle"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="bottom|end"
+        android:background="@android:color/transparent"/>
+
+    <!-- Close button -->
+    <ImageButton
+        android:id="@+id/overlayCloseBtn"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:background="@android:color/transparent"
+        android:layout_gravity="top|end"
+        android:layout_width="40dp"
+        android:layout_height="40dp"/>
+
+</FrameLayout>

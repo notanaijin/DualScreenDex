@@ -18,6 +18,8 @@ import androidx.core.content.edit
 import com.enrpau.dualscreendex.data.RomManager
 import com.enrpau.dualscreendex.data.RomProfile
 import androidx.recyclerview.widget.RecyclerView
+import android.provider.Settings
+
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -149,6 +151,19 @@ class SettingsActivity : AppCompatActivity() {
             prefs.edit { putString("SCAN_ALIGN", newMode) }
             refreshScannerUI(prefs)
         }
+        findViewById<MaterialButton>(R.id.btnEnableOverlay).setOnClickListener {
+
+            if (!Settings.canDrawOverlays(this)) {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    android.net.Uri.parse("package:$packageName")
+                )
+                startActivity(intent)
+            } else {
+                startService(Intent(this, OverlayService::class.java))
+            }
+        }
+
     }
 
     private fun refreshThemeUI(prefs: SharedPreferences) {

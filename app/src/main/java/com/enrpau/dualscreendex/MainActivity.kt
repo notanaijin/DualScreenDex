@@ -91,8 +91,11 @@ class MainActivity : AppCompatActivity() {
         loadSettings()
 
         viewModel.displayedPokemon.observeForeverSafe { pokemon ->
-            updateCardUI(pokemon)
+            if (pokemon != null) {
+                updateCardUI(pokemon)
+            }
         }
+
 
         viewModel.pokedexList.observeForeverSafe { list ->
             adapter.updateList(list)

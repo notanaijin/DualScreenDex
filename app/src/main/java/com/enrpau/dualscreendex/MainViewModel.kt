@@ -19,8 +19,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _showBattleTab.value = false
     }
 
-    private val _displayedPokemon = MutableLiveData<Pokemon>()
-    val displayedPokemon: LiveData<Pokemon> = _displayedPokemon
+    private val _displayedPokemon = MutableLiveData<Pokemon?>()
+    val displayedPokemon: LiveData<Pokemon?> = _displayedPokemon
+
 
     private val _pokedexList = MutableLiveData<List<Pokemon>>()
     val pokedexList: LiveData<List<Pokemon>> = _pokedexList
@@ -76,7 +77,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 ?: newList.find { it.id == current.id }
 
             if (newVersion != null) {
-                _displayedPokemon.value = newVersion!!
+                _displayedPokemon.value = newVersion
+
                 calculateMatchups(newVersion)
             }
         }
@@ -99,6 +101,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         resetHandler.removeCallbacks(resetRunnable)
 
         if (names.isNullOrEmpty()) {
+            _displayedPokemon.value = null
+
             if (_isBattleMode.value != true) {
                 _showBattleTab.value = false
                 battleList = emptyList()
@@ -112,7 +116,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val allPokemon = repository.getAllPokemon()
 
         for (i in names.indices) {
-            val pId = ids?.getOrNull(i) ?: 0
+            val pId = ids?.getOrNull(i) ?: continue
             val t1 = PokemonType.fromString(t1s?.getOrNull(i) ?: "unknown")
 
             val match = allPokemon.firstOrNull {
@@ -121,12 +125,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             if (match != null) {
                 scanned.add(match)
-            } else {
-                scanned.add(Pokemon(names[i], pId, t1, PokemonType.UNKNOWN, null))
             }
         }
 
+
         battleList = scanned
+
+        if (battleList.isEmpty()) {
+            _displayedPokemon.value = null
+            return
+        }
+
 
         val label = battleList.joinToString(" & ") { it.name.replaceFirstChar { c -> c.uppercase() } }
         battleTabText.value = label

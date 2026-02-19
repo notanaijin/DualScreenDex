@@ -85,6 +85,16 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_marginBottom="32dp"/>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEnableOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enable Floating Overlay"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_marginTop="16dp"
+                />
+
+
             <TextView
                 android:id="@+id/lblThemeTitle"
                 android:layout_width="wrap_content"
