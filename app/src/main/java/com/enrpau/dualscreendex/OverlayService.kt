@@ -15,14 +15,20 @@ import android.os.Looper
 
 
 class OverlayService : Service() {
+    
+    private lateinit var prefListener: SharedPreferences.OnSharedPreferenceChangeListener
 
     private lateinit var windowManager: WindowManager
     private lateinit var overlayRoot: View
     private lateinit var viewModel: MainViewModel
     private lateinit var screenController: MainScreenController
 
+    private lateinit var prefs: SharedPreferences
+    private lateinit var displayMetrics: android.util.DisplayMetrics
+
     private var lastPokemonDetectedTime: Long = 0L
 
+    private val DIM_DELAY_MS = 10000L
 
     private var initialX = 0
     private var initialY = 0
@@ -30,12 +36,17 @@ class OverlayService : Service() {
     private var initialTouchY = 0f
 
     private val handler = Handler(Looper.getMainLooper())
-    private var dimRunnable: Runnable? = null
+    
 
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onCreate() {
+
+        prefs = getSharedPreferences("DualDexPrefs", Context.MODE_PRIVATE)
+
+        displayMetrics = resources.displayMetrics
+
         super.onCreate()
 
         if (!Settings.canDrawOverlays(this)) {
@@ -69,6 +80,17 @@ class OverlayService : Service() {
             }
         }
 
+        prefListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == "SCAN_ALIGN") {
+                val layoutParams = overlayRoot.layoutParams as WindowManager.LayoutParams
+                enforceOverlaySide(layoutParams)
+            }
+        }
+
+        prefs.registerOnSharedPreferenceChangeListener(prefListener)
+
+
+
 
 
 
@@ -91,6 +113,9 @@ class OverlayService : Service() {
         params.y = 100
 
         windowManager.addView(overlayRoot, params)
+
+        enforceOverlaySide(params)
+
 
         // Initial scale
         screenController.scaleUI(params.width)
@@ -148,9 +173,14 @@ class OverlayService : Service() {
                 MotionEvent.ACTION_MOVE -> {
                     params.x = initialX + (event.rawX - initialTouchX).toInt()
                     params.y = initialY + (event.rawY - initialTouchY).toInt()
+
+                    enforceOverlaySide(params)
+
                     windowManager.updateViewLayout(overlayRoot, params)
+
                     true
                 }
+
 
                 else -> false
             }
@@ -191,30 +221,14 @@ class OverlayService : Service() {
         if (::overlayRoot.isInitialized) {
             windowManager.removeView(overlayRoot)
         }
+        prefs.unregisterOnSharedPreferenceChangeListener(prefListener)
 
         super.onDestroy()
     }
-    private fun startDimTimer() {
-
-        cancelDimTimer()
-
-        dimRunnable = Runnable {
-
-            val now = System.currentTimeMillis()
-            val timeSinceLastPokemon = now - lastPokemonDetectedTime
-
-            if (timeSinceLastPokemon >= 5000) {
-                screenController.setOverlayDimmed(true)
-            }
-        }
-
-        handler.postDelayed(dimRunnable!!, 5000)
-    }
+    
 
 
-    private fun cancelDimTimer() {
-        dimRunnable?.let { handler.removeCallbacks(it) }
-    }
+    
 
     private fun startDimChecker() {
 
@@ -224,7 +238,7 @@ class OverlayService : Service() {
                 val now = System.currentTimeMillis()
                 val timeSinceLastPokemon = now - lastPokemonDetectedTime
 
-                if (timeSinceLastPokemon >= 5000) {
+                if (timeSinceLastPokemon >= DIM_DELAY_MS) {
                     screenController.setOverlayDimmed(true)
                 }
 
@@ -232,6 +246,38 @@ class OverlayService : Service() {
             }
         })
     }
+
+    private fun enforceOverlaySide(params: WindowManager.LayoutParams) {
+
+        val scanAlign = prefs.getString("SCAN_ALIGN", "left") ?: "left"
+
+        val screenWidth = displayMetrics.widthPixels
+        val overlayWidth = params.width
+
+        val screenMid = screenWidth / 2
+
+        if (scanAlign == "left") {
+            // OCR scans LEFT → overlay must stay RIGHT
+            if (params.x < screenMid) {
+                params.x = screenMid
+            }
+        } else {
+            // OCR scans RIGHT → overlay must stay LEFT
+            if (params.x + overlayWidth > screenMid) {
+                params.x = screenMid - overlayWidth
+            }
+        }
+
+        // Clamp inside screen
+        if (params.x < 0) params.x = 0
+        if (params.x + overlayWidth > screenWidth) {
+            params.x = screenWidth - overlayWidth
+        }
+
+        windowManager.updateViewLayout(overlayRoot, params)
+    }
+
+
 
 
 }
