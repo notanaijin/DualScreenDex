@@ -95,7 +95,7 @@ class MainScreenController(
                 populateSmartGrid(container, it)
 
                 if (isOverlay) {
-                    scaleGrid(container, (if (isOverlay) 9f else 12f) * currentScale)
+                    scaleGrid(container, (if (isOverlay) 14f else 12f) * currentScale)
                 }
             }
 
@@ -108,7 +108,7 @@ class MainScreenController(
                 populateSmartGrid(container, it)
 
                 if (isOverlay) {
-                    scaleGrid(container, (if (isOverlay) 9f else 12f) * currentScale)
+                    scaleGrid(container, (if (isOverlay) 14f else 12f) * currentScale)
                 }
             }
 
@@ -130,10 +130,10 @@ class MainScreenController(
         currentScale = scale
 
 
-        val nameSize = if (isOverlay) 14f else 20f
-        val idSize = if (isOverlay) 9f else 14f
-        val labelSize = if (isOverlay) 10f else 14f
-        val badgeSize = if (isOverlay) 9f else 12f
+        val nameSize = if (isOverlay) 17f else 20f
+        val idSize = if (isOverlay) 14f else 14f
+        val labelSize = if (isOverlay) 15f else 14f
+        val badgeSize = if (isOverlay) 14f else 12f
 
         tvName?.textSize = nameSize * scale
         tvId?.textSize = idSize * scale
@@ -246,7 +246,7 @@ class MainScreenController(
 
         if (isOverlay) {
             layoutTypes?.let {
-                scaleTypeBadges(it, (if (isOverlay) 9f else 12f) * currentScale)
+                scaleTypeBadges(it, (if (isOverlay) 14f else 12f) * currentScale)
             }
         }
 
@@ -317,7 +317,7 @@ class MainScreenController(
 
     private fun addTypeBadge(container: LinearLayout, type: PokemonType) {
 
-        val baseSize = if (isOverlay) 9f else 12f
+        val baseSize = if (isOverlay) 14f else 12f
         val px = baseSize * currentScale *
                 context.resources.displayMetrics.scaledDensity
 
