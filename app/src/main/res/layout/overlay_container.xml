@@ -34,7 +34,7 @@
         android:id="@+id/overlayCloseBtn"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
         android:background="@android:color/transparent"
-        android:layout_gravity="top|end"
+        android:layout_gravity="top|start"
         android:layout_width="40dp"
         android:layout_height="40dp"/>
 
